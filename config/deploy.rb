@@ -6,19 +6,24 @@ lock '3.11.0'
 set :application, 'freemarket_sample_53a'
 
 # どのリポジトリからアプリをpullするかを指定する
-set :repo_url,  'git@github.com:tenra1115/freemarket_sample_53a.git'
+set :repo_url,  'git@github.com:sochisancha/freemarket_sample_53a.git'
 
-# バージョンが変わっても共通で参照するディレクトリを指定
+# ブランチを聞いてくれる（cap)
+ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+
+#git ignoreしているfileがあることを教えてる
+set :linked_files, %w{ config/secrets.yml }
+set :linked_files,fetch(:linked_files,[]).push("config/master.key")
+# バージョンが変わっても共通で参照するディレクトリを指定、リンクしてくれる
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
 
 set :rbenv_type, :user
 set :rbenv_ruby, '2.5.1' #カリキュラム通りに進めた場合、2.5.1か2.3.1です
 
-set :linked_files, %w{ config/secrets.yml }
 
 # どの公開鍵を利用してデプロイするか
 set :ssh_options, auth_methods: ['publickey'],
-                  keys: ['~/.ssh/katsuno']
+                  keys: ['~/.ssh/ss.pem']
 
 # プロセス番号を記載したファイルの場所
 set :unicorn_pid, -> { "#{shared_path}/tmp/pids/unicorn.pid" }
